@@ -104,6 +104,16 @@
     }
     .cta:hover, .cta:focus-visible { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--paper); }
 
+    #signup-form { max-width: 480px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; }
+    #signup-form input[type=email] {
+      flex: 1 1 240px; font: inherit; padding: .75rem 1rem; border: 3px solid var(--paper); background: #fff; color: var(--ink);
+    }
+    #signup-form button { cursor: pointer; font: inherit; font-weight: 600; }
+    .consent { flex-basis: 100%; font-size: .85rem; opacity: .8; text-align: left; display: flex; gap: .5rem; align-items: flex-start; }
+    .consent input { margin-top: .3rem; }
+    #signup-status { flex-basis: 100%; margin: 0; min-height: 1.5em; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
     footer { text-align: center; padding: 1.5rem; color: var(--muted); font-size: .9rem; }
 
     @media (max-width: 800px) {
@@ -150,13 +160,52 @@
       </div>
     </section>
 
-    <section class="notify">
+    <section class="notify" id="signup">
       <h2>อย่าพลาดวันเปิดตัว</h2>
-      <p>ติดต่อเราเพื่อรับข่าวสารก่อนใคร</p>
-      <a class="cta" href="mailto:nuttakit.khongkaew@gmail.com">ติดต่อเรา</a>
+      <p>กรอกอีเมลเพื่อรับข่าวการเปิดตัวและเรื่องใหม่ก่อนใคร</p>
+      <form id="signup-form">
+        <label for="email" class="sr-only">อีเมล</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+        <button class="cta" type="submit">แจ้งเตือนฉัน</button>
+        <label class="consent">
+          <input type="checkbox" name="consent" required>
+          ฉันยินยอมรับอีเมลข่าวสารจาก Supersonixz และยอมรับ <a href="/privacy.html">นโยบายความเป็นส่วนตัว</a> — ยกเลิกรับได้ทุกเมื่อผ่านลิงก์ในทุกอีเมล
+        </label>
+        <p id="signup-status" role="status" aria-live="polite"></p>
+      </form>
     </section>
   </main>
 
-  <footer>© 2026 Supersonixz — มังงะญี่ปุ่นแปลไทย</footer>
+  <footer>
+    © 2026 Supersonixz — มังงะญี่ปุ่นแปลไทย ·
+    <a href="/privacy.html">นโยบายความเป็นส่วนตัว</a> ·
+    <a href="mailto:nuttakit.khongkaew@gmail.com">ติดต่อเรา</a>
+  </footer>
+
+  <script>
+    // ponytail: OneSignal create-user is a public client endpoint (what their SDK calls), so no backend/secret needed
+    const form = document.getElementById('signup-form');
+    const status = document.getElementById('signup-status');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      status.textContent = 'กำลังบันทึก...';
+      try {
+        const res = await fetch('https://api.onesignal.com/apps/29c980f8-4852-4893-b555-2243c9f2b572/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            properties: { tags: { source: 'website', consent: new Date().toISOString() } },
+            subscriptions: [{ type: 'Email', token: email, enabled: true }]
+          })
+        });
+        if (!res.ok) throw new Error(res.status);
+        form.reset();
+        status.textContent = 'ขอบคุณ! เราจะแจ้งคุณทันทีที่เปิดตัว';
+      } catch {
+        status.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง';
+      }
+    });
+  </script>
 </body>
 </html>
