@@ -2,6 +2,23 @@
 
 One line per decision. Newest first. The loop reads this before asking a question; if it's answered here, don't ask.
 
+## 2026-11-05 — grill round 2
+
+| # | Topic | Decision | Why |
+|---|---|---|---|
+| D16 | Sign-in | Better Auth: email+password, magic link, Google, LINE (generic OAuth), X/Twitter. Phase 1 ships email+password only; others follow as separate gated tasks. X may not return an email → account must allow email-less users or prompt for one. | LINE is dominant in TH. |
+| D17 | Transactional email | OneSignal email (verification, reset, magic link, receipts, shipping). Needs sending-domain DNS on supersonixz.net (human). | Already in stack. |
+| D18 | Admin | `bun run make-admin <email>` promotes a user; admins must have TOTP 2FA (Better Auth 2FA plugin) or `/admin/*` returns 403. No admin sign-up UI. | |
+| D19 | Reader mode | Default page-flip right-to-left; user toggle to vertical scroll; preference saved per user. | Manga reading order. |
+| D20 | VAT | Prices are VAT-inclusive (7%). Emailed receipt shows VAT breakdown. Full tax invoices issued manually on request. **Human to verify** VAT registration status with accountant. | |
+| D21 | Refunds | Admin-only, from web-admin via Stripe Refunds API → `entitlement.revoked`. Digital non-refundable by default; physical within 7 days if damaged. No self-serve. | |
+| D22 | Age gate | `series.rating[all|13+|18+]`. 18+ hidden from guests; signed-in user confirms DOB once (`users.dob_confirmed_at`, `users.birth_date`) before seeing 18+. | |
+| D23 | Free chapters | Per-chapter `is_free` + optional limited-time window `free_from`/`free_until`; admin bulk action "first N free". Free = `is_free OR now() in [free_from, free_until)`. | Promotions. |
+| D24 | Loop host | Runs on owner's Mac in git worktrees, uses local `.env.local` test keys. | Free, local secrets. |
+| D25 | Loop limits | Max 5 auto-merged PRs per day. Loop stops at the end of each phase for human re-plan. | Bounded unreviewed change. |
+| D26 | Observability | Sentry free tier (Next.js apps + Bun services) + Railway/Vercel built-in logs. | |
+| D27 | Review | Owner runs weekly `/retro` over merged PRs + spot-checks diffs; anything wrong becomes a rule in `CLAUDE.md`. | |
+
 ## 2026-11-05 — v1 grill session
 
 | # | Topic | Decision | Why |

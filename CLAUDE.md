@@ -30,6 +30,9 @@ Created by task 0.1 — keep these names stable:
 - Update the task's Status in `Plans.md` in the same PR (`cc:WIP` → `cc:完了`).
 - Auto-merge allowed when: tests + typecheck green **and** reviewer agent approves **and** the PR touches no approval gate below.
 - Merging to `main` deploys to production once Vercel/Railway are linked. Treat every merge as a deploy.
+- Max **5 auto-merged PRs per day** (D25). After the 5th, keep working but leave PRs open.
+- At the end of each Plans.md phase, **stop** and push-notify for re-plan. Don't start the next phase.
+- Runs locally in git worktrees (D24); each worktree copies `.env.local` from the main checkout.
 
 ## Approval gates — stop, label PR `needs-human`, push-notify, do not merge
 1. Deploy/infra config: Vercel/Railway settings, DNS, `vercel.json`, `railway.*`, moving the landing page (decision D1).
@@ -39,6 +42,7 @@ Created by task 0.1 — keep these names stable:
 5. User data / PDPA: account deletion, data export, retention.
 6. A new service, a new paid SaaS, or a new top-level dependency.
 7. Anything `decisions.md` marks **human to verify**.
+8. DNS / sending-domain / OAuth app setup (LINE, Google, X, OneSignal email) — loop writes the code, human creates the external apps and keys.
 
 ## When blocked
 - Same task fails twice → set Status `blocked: <reason>`, push-notify, move to the next unblocked task.

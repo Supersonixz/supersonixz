@@ -29,7 +29,7 @@ Frontends call the gateway through Eden Treaty (`@elysiajs/eden`), so request an
 | Service | Owns | Talks to |
 |---|---|---|
 | **gateway** | JWT verify, rate limit, CORS, path routing | all services (internal network) |
-| **auth** | users, sessions, roles (`reader`, `admin`), JWT issue | — |
+| **auth** | users, sessions, roles (`reader`, `admin`), JWT issue; email+password, magic link, Google, LINE, X; TOTP 2FA required for admins | OneSignal email |
 | **reading** | series, chapters, pages, reading progress, entitlements (read model), admin page upload (presigned PUT) | R2 (signed URLs; paid pages watermarked per user with sharp) |
 | **transaction** | products, stock, orders, subscriptions, payments | Stripe; emits `entitlement.granted/revoked` |
 | **social** | posts, comments, chat rooms/messages, product refs | reading (product card lookup via gateway) |
@@ -60,13 +60,14 @@ The gateway verifies the JWT once and forwards `x-user-id` and `x-user-role` to 
 
 ## DB schema outline (Postgres, one schema per service)
 
-**auth**: `users(id, email, name, role, created_at)`, `sessions`, `accounts` (Better Auth tables)
+**auth**: `users(id, email nullable, name, role, birth_date, dob_confirmed_at, created_at)`, 2FA tables, `sessions`, `accounts` (Better Auth tables)
 
 **reading**
-- `series(id, slug, title_th, title_ja, author, cover_url, status)`
-- `chapters(id, series_id, number, title, is_free, published_at)`
+- `series(id, slug, title_th, title_ja, author, cover_url, status, rating[all|13+|18+])`
+- `chapters(id, series_id, number, title, is_free, free_from, free_until, published_at)` — free = `is_free OR now() in [free_from, free_until)`
 - `pages(id, chapter_id, index, r2_key)`
 - `reading_progress(user_id, chapter_id, page_index, updated_at)`
+- `reader_prefs(user_id, mode[rtl_page|vertical])`
 - `entitlements(user_id, scope_type[series|chapter|plan], scope_id, expires_at)` (fed by transaction events)
 
 **transaction**
@@ -96,7 +97,8 @@ The gateway verifies the JWT once and forwards `x-user-id` and `x-user-role` to 
 | Postgres | Neon (free tier, branch per PR later) | $0 |
 | Manga images | Cloudflare R2 + signed URLs | $0 up to 10 GB, no egress |
 | Payments | Stripe (PromptPay + cards + subscriptions) | per-transaction |
-| Email/push | OneSignal (existing) | free tier |
+| Email/push | OneSignal (existing) — marketing + transactional email | free tier |
+| Errors | Sentry (apps + services) | free tier |
 
 DNS stays on Vercel: `app`, `social` and `admin` point to Vercel; `api` gets a CNAME to the Railway gateway.
 
