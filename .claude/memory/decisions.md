@@ -2,6 +2,19 @@
 
 One line per decision. Newest first. The loop reads this before asking a question; if it's answered here, don't ask.
 
+## 2026-11-05 — grill round 3
+
+| # | Topic | Decision | Why |
+|---|---|---|---|
+| D28 | Licensing | `series.license_until` + `series.on_license_expiry[keep_access\|revoke]`, set per contract. After expiry: always hidden from catalog + sale; `revoke` also 403s pages for everyone, `keep_access` lets existing buyers keep reading. Admin email 30 days before expiry. | Contracts differ. |
+| D29 | Pricing | Admin sets all prices in web-admin; none hardcoded. Saving a plan creates/updates the Stripe Price. | |
+| D30 | New-chapter alerts | `follows(user_id, series_id)`. On publish → outbox `chapter.published` → OneSignal push to followers; optional email opt-in per user. | |
+| D31 | Search | `pg_trgm` fuzzy match on `title_th`, `title_ja`, `title_en` + genre/tag filters. No search engine. | Thai has no word spaces; trigram avoids segmentation. |
+| D32 | Environments | Vercel previews + Railway PR environments + Neon branch per PR. No permanent staging. Prod = `main`. | |
+| D33 | Backups | Neon PITR + nightly GitHub Action `pg_dump` → R2, keep 30 days. | Free-tier PITR window is short. |
+| D34 | Analytics | PostHog free tier, funnel visit → sign-up → read → buy. Requires PDPA cookie consent banner; no tracking before consent. | |
+| D35 | PWA | Installable (manifest + icons), **no** offline caching of pages. | Keeps image protection intact. |
+
 ## 2026-11-05 — grill round 2
 
 | # | Topic | Decision | Why |

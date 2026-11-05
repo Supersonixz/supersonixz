@@ -63,7 +63,8 @@ The gateway verifies the JWT once and forwards `x-user-id` and `x-user-role` to 
 **auth**: `users(id, email nullable, name, role, birth_date, dob_confirmed_at, created_at)`, 2FA tables, `sessions`, `accounts` (Better Auth tables)
 
 **reading**
-- `series(id, slug, title_th, title_ja, author, cover_url, status, rating[all|13+|18+])`
+- `series(id, slug, title_th, title_ja, title_en, author, cover_url, status, rating[all|13+|18+], license_until, on_license_expiry[keep_access|revoke])` — trigram indexes on titles
+- `genres`, `series_genres`, `follows(user_id, series_id)`
 - `chapters(id, series_id, number, title, is_free, free_from, free_until, published_at)` — free = `is_free OR now() in [free_from, free_until)`
 - `pages(id, chapter_id, index, r2_key)`
 - `reading_progress(user_id, chapter_id, page_index, updated_at)`
@@ -99,6 +100,9 @@ The gateway verifies the JWT once and forwards `x-user-id` and `x-user-role` to 
 | Payments | Stripe (PromptPay + cards + subscriptions) | per-transaction |
 | Email/push | OneSignal (existing) — marketing + transactional email | free tier |
 | Errors | Sentry (apps + services) | free tier |
+| Analytics | PostHog (after cookie consent) | free tier |
+| Backups | Neon PITR + nightly `pg_dump` → R2 (GitHub Action, 30 days) | $0 |
+| Previews | Vercel preview + Railway PR env + Neon branch per PR | $0–low |
 
 DNS stays on Vercel: `app`, `social` and `admin` point to Vercel; `api` gets a CNAME to the Railway gateway.
 
