@@ -12,7 +12,7 @@ One line per decision. Newest first. The loop reads this before asking a questio
 | D19 | Reader mode | Default page-flip right-to-left; user toggle to vertical scroll; preference saved per user. | Manga reading order. |
 | D20 | VAT | Prices are VAT-inclusive (7%). Emailed receipt shows VAT breakdown. Full tax invoices issued manually on request. **Human to verify** VAT registration status with accountant. | |
 | D21 | Refunds | Admin-only, from web-admin via Stripe Refunds API → `entitlement.revoked`. Digital non-refundable by default; physical within 7 days if damaged. No self-serve. | |
-| D22 | Age gate | `series.rating[all|13+|18+]`. 18+ hidden from guests; signed-in user confirms DOB once (`users.dob_confirmed_at`, `users.birth_date`) before seeing 18+. | |
+| D22 | Age gate | `series.rating[all\|13+\|18+]`. 18+ hidden from guests; signed-in user confirms DOB once (`users.dob_confirmed_at`, `users.birth_date`) before seeing 18+. | |
 | D23 | Free chapters | Per-chapter `is_free` + optional limited-time window `free_from`/`free_until`; admin bulk action "first N free". Free = `is_free OR now() in [free_from, free_until)`. | Promotions. |
 | D24 | Loop host | Runs on owner's Mac in git worktrees, uses local `.env.local` test keys. | Free, local secrets. |
 | D25 | Loop limits | Max 5 auto-merged PRs per day. Loop stops at the end of each phase for human re-plan. | Bounded unreviewed change. |
@@ -30,7 +30,7 @@ One line per decision. Newest first. The loop reads this before asking a questio
 | D5 | Subscription payment | Cards = recurring Stripe subscription. PromptPay = one-off fixed pass (e.g. 30 days, no auto-renew). Loop must verify PromptPay limits in current Stripe docs before building. | PromptPay is believed to be one-off only. |
 | D6 | Plan scope | Active plan unlocks **all digital chapters** until `current_period_end`. Cancel = keep access to period end. | One entitlement row, `scope_type=plan`. |
 | D7 | Physical → digital | Buying a physical book **also grants** digital entitlement for its chapters. Needs `product_bundles(product_id, grants_scope_type, grants_scope_id)`. | Owner choice. |
-| D8 | Shipping | `orders` gets `shipping_address` (jsonb), `fulfillment_status[pending|shipped|delivered]`, `tracking_no`. Admin marks shipped manually. No carrier API. | |
+| D8 | Shipping | `orders` gets `shipping_address` (jsonb), `fulfillment_status[pending\|shipped\|delivered]`, `tracking_no`. Admin marks shipped manually. No carrier API. | |
 | D9 | Page upload | reading `/admin/series/:id/chapters/:id/uploads` returns presigned R2 PUT URLs; browser uploads direct; reading writes `pages` rows on confirm. | Big files skip the gateway. |
 | D10 | Image protection | Free chapters: short-lived (≈5 min) signed R2 URLs. Paid chapters: reading stamps faint userId watermark with `sharp` at serve time, short cache. | Leak tracing for paid content only. |
 | D11 | PDPA | Self-serve account delete: profile/posts/chat anonymised or removed. Orders/payments kept 5 yrs (**human to verify** Thai retention rule). No chat auto-expiry. | |
