@@ -29,7 +29,7 @@ Frontends call the gateway through Eden Treaty (`@elysiajs/eden`), so request an
 | Service | Owns | Talks to |
 |---|---|---|
 | **gateway** | JWT verify, rate limit, CORS, path routing | all services (internal network) |
-| **auth** | users, sessions, roles (`reader`, `admin`), JWT issue; email+password, magic link, Google, LINE, X; TOTP 2FA required for admins | OneSignal email |
+| **auth** | users, sessions, roles (`reader`, `staff`, `admin`) + staff permissions, JWT issue (claims `role`, `perms`); email+password, magic link, Google, LINE, X; TOTP 2FA required for staff/admin | OneSignal email |
 | **reading** | series, chapters, pages, reading progress, entitlements (read model), admin page upload (presigned PUT) | R2 (signed URLs; paid pages watermarked per user with sharp) |
 | **transaction** | products, stock, orders, subscriptions, payments | Stripe; emits `entitlement.granted/revoked` |
 | **social** | posts, comments, chat rooms/messages, product refs | reading (product card lookup via gateway) |
@@ -52,15 +52,15 @@ Frontends call the gateway through Eden Treaty (`@elysiajs/eden`), so request an
 | `/social/*` (REST) | social | public read / user write | 30 writes/min/user |
 | `/social/ws` | social | user (token in query on upgrade) | 5 conns/user |
 | `/marketing/subscribe` | marketing | public | 5/min/IP |
-| `/admin/*` | any (`/admin/tx/*` → transaction, …) | `role=admin` | 60/min/user |
+| `/admin/*` | any (`/admin/tx/*` → transaction, …) | `role=admin`, or `role=staff` with the route's permission (`content`, `orders`, `pricing`, `refunds`, `marketing`, `moderation`, `users`) | 60/min/user |
 
-The gateway verifies the JWT once and forwards `x-user-id` and `x-user-role` to services over the private network. Services trust those headers only from the gateway, which is enforced by keeping them private on Railway's internal network.
+The gateway verifies the JWT once and forwards `x-user-id`, `x-user-role` and `x-user-perms` to services over the private network. Services trust those headers only from the gateway, which is enforced by keeping them private on Railway's internal network.
 
 > ponytail: in-memory rate limits (single gateway instance). Move to Upstash Redis when running more than one gateway replica.
 
 ## DB schema outline (Postgres, one schema per service)
 
-**auth**: `users(id, email nullable, name, role, birth_date, dob_confirmed_at, created_at)`, 2FA tables, `sessions`, `accounts` (Better Auth tables)
+**auth**: `staff_permissions(user_id, permission)`, `users(id, email nullable, name, role[reader|staff|admin], birth_date, dob_confirmed_at, created_at)`, 2FA tables, `sessions`, `accounts` (Better Auth tables)
 
 **reading**
 - `series(id, slug, title_th, title_ja, title_en, author, cover_url, status, rating[all|13+|18+], license_until, on_license_expiry[keep_access|revoke])` — trigram indexes on titles

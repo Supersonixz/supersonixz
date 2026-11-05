@@ -2,6 +2,15 @@
 
 One line per decision. Newest first. The loop reads this before asking a question; if it's answered here, don't ask.
 
+## 2026-11-05 — grill round 4
+
+| # | Topic | Decision | Why |
+|---|---|---|---|
+| D36 | Phase split | Phase 1 = first slice (1.1–1.10). Licence, search, PWA, previews, backups → Phase 1c. Loop stops between. | Checkpoint after the slice works. |
+| D37 | Staff permissions | Roles `reader \| staff \| admin`. Staff carry `permissions[]` from: `content`, `orders`, `pricing`, `refunds`, `marketing`, `moderation`, `users`. Admin = all. JWT claim `perms`; gateway forwards `x-user-perms`; each `/admin/*` route requires one permission. TOTP 2FA required for staff and admin (extends D18). Only admin can grant permissions. | Owner wants fine-grained control. |
+| D38 | Legal pages | Loop drafts Thai + English Terms of Service (accounts, purchases, refunds D21, age D22, licence-expiry access D28). **Gate**: owner approves (ideally with a lawyer) before merge. | |
+| D39 | Support | Footer + help page link to LINE Official Account and contact email. No ticketing. | |
+
 ## 2026-11-05 — grill round 3
 
 | # | Topic | Decision | Why |

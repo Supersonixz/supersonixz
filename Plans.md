@@ -28,6 +28,11 @@ Rules: `CLAUDE.md`. Decisions referenced as D1…D15 in `.claude/memory/decision
 | 1.8 | Free window: `free_from`/`free_until` honoured in 1.4 check (D23) [tdd:required] | tests: inside window → URLs, outside → 403 | 1.4 | cc:TODO |
 | 1.9 | Age gate: `series.rating`, hide 18+ from guests, DOB confirm flow (D22) [tdd:required] | tests: guest can't list/read 18+; confirmed adult can | 1.6 | cc:TODO |
 | 1.10 | Sentry in auth, gateway, reading, web-reader (D26) | test error appears in Sentry dev project (manual check in PR) | 1.6 | cc:TODO |
+
+## Phase 1c: Catalog polish + ops (D36)
+
+| Task | 内容 | DoD | Depends | Status |
+|------|------|-----|---------|--------|
 | 1.11 | Licence rules: hide expired series; `revoke` → 403 pages (D28) [tdd:required] | tests for keep_access vs revoke after `license_until` | 1.4 | cc:TODO |
 | 1.12 | Search: `pg_trgm` on titles + genre filter (D31) [tdd:required] | test: partial Thai title query returns series | 1.3 | cc:TODO |
 | 1.13 | PWA manifest + icons, no service-worker page cache (D35) | Lighthouse "installable" passes (manual check in PR) | 1.6 | cc:TODO |
@@ -42,6 +47,7 @@ Rules: `CLAUDE.md`. Decisions referenced as D1…D15 in `.claude/memory/decision
 | 1b.2 | Magic link sign-in (D16) | test: link → session → JWT | 1b.1 | cc:TODO |
 | 1b.3 | Google + LINE + X OAuth (D16); handle email-less X users | tests with mocked providers; human creates OAuth apps | Phase 1 | cc:TODO |
 | 1b.4 | `make-admin` script + required TOTP 2FA for `/admin/*` (D18) | test: admin without 2FA → 403 | Phase 1 | cc:TODO |
+| 1b.5 | `staff` role + `staff_permissions`, `perms` JWT claim, gateway per-route permission check, admin-only grant (D37) [tdd:required] | tests: staff without perm → 403, with perm → 200, staff can't grant | 1b.4 | cc:TODO |
 
 ## Phase 2: Money (coarse — break down after Phase 1)
 
@@ -66,6 +72,8 @@ Rules: `CLAUDE.md`. Decisions referenced as D1…D15 in `.claude/memory/decision
 | 3.3 | Account self-delete (D11) **gate** | test: user deleted, orders retained, posts anonymised | 3.2 | cc:TODO |
 | 3.4 | marketing service: OneSignal announcements | tests | Phase 1 | cc:TODO |
 | 3.5 | Follows + `chapter.published` → OneSignal push, email opt-in (D30) | test: publish → push sent to followers only (mocked) | 3.4 | cc:TODO |
+| 3.7 | Terms of Service th/en draft (D38) **gate** | page renders both languages; PR labelled needs-human | Phase 1 | cc:TODO |
+| 3.8 | Help page + footer: LINE OA + contact email (D39) | links present in th/en | 1.6 | cc:TODO |
 | 3.6 | Licence expiry warning email to admin 30 days ahead (D28) | test: series expiring in 30d triggers one email | 3.4, 1b.1 | cc:TODO |
 
 ## Open questions
