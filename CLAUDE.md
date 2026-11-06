@@ -1,6 +1,6 @@
 # Supersonixz — agent rules
 
-Thai-translated manga publisher. Architecture: `docs/ARCHITECTURE.md`. Decisions: `.claude/memory/decisions.md`. Work queue: `Plans.md`.
+Thai-translated manga publisher. Architecture: `docs/ARCHITECTURE.md`. Secrets/config: `docs/SECRETS.md`. Decisions: `.claude/memory/decisions.md`. Work queue: `Plans.md`.
 
 Read all three before starting a task. If a decision is already recorded, follow it, don't re-ask.
 
@@ -23,7 +23,9 @@ Created by task 0.1 — keep these names stable:
 - Services trust `x-user-id` / `x-user-role` only because they are private on Railway. Never expose a service port publicly.
 - Money = integer **satang** (Stripe's minor unit), columns named `*_satang`. Never floats.
 - No new dependency without a one-line reason in the PR. Prefer what's already installed.
-- Secrets live in `.env.local` (gitignored). Never commit keys, never print them in logs or PRs.
+- Secrets live in **Infisical** (D40) — run commands as `infisical run --env=dev -- <cmd>`. Never commit keys, never print them in logs or PRs. `.env.local` holds only the loop's Infisical login. See `docs/SECRETS.md`.
+- Non-secret config goes in `packages/config` (D41), validated at boot. Scripts read `process.env` only — no `--env-file`.
+- A PR that adds a secret must add its row to `docs/SECRETS.md` (where it lives, how to rotate).
 
 ## Git flow
 - One branch + one PR per Plans.md task: `task/<id>-<slug>`. Never push to `main` directly.
@@ -32,7 +34,7 @@ Created by task 0.1 — keep these names stable:
 - Merging to `main` deploys to production once Vercel/Railway are linked. Treat every merge as a deploy.
 - Max **5 auto-merged PRs per day** (D25). After the 5th, keep working but leave PRs open.
 - At the end of each Plans.md phase, **stop** and push-notify for re-plan. Don't start the next phase.
-- Runs locally in git worktrees (D24); each worktree copies `.env.local` from the main checkout.
+- Runs locally in git worktrees (D24); each worktree copies `.env.local` (Infisical login only) from the main checkout.
 
 ## Approval gates — stop, label PR `needs-human`, push-notify, do not merge
 1. Deploy/infra config: Vercel/Railway settings, DNS, `vercel.json`, `railway.*`, moving the landing page (decision D1).
@@ -42,7 +44,8 @@ Created by task 0.1 — keep these names stable:
 5. User data / PDPA: account deletion, data export, retention.
 6. A new service, a new paid SaaS, or a new top-level dependency.
 7. Anything `decisions.md` marks **human to verify**.
-8. DNS / sending-domain / OAuth app setup (LINE, Google, X, OneSignal email) — loop writes the code, human creates the external apps and keys.
+8. Infisical project/env/permission changes, or any `prod` secret.
+9. DNS / sending-domain / OAuth app setup (LINE, Google, X, OneSignal email) — loop writes the code, human creates the external apps and keys.
 
 ## When blocked
 - Same task fails twice → set Status `blocked: <reason>`, push-notify, move to the next unblocked task.

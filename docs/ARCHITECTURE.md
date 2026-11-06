@@ -19,6 +19,7 @@ services/
   marketing/      Elysia + OneSignal
 packages/
   db/             Drizzle schemas (one Postgres schema per service) + migrations
+  config/         typed, validated non-secret config per service (secrets: Infisical, see SECRETS.md)
   ui/             shared React components (reader + social)
 ```
 
@@ -100,6 +101,7 @@ The gateway verifies the JWT once and forwards `x-user-id`, `x-user-role` and `x
 | Payments | Stripe (PromptPay + cards + subscriptions) | per-transaction |
 | Email/push | OneSignal (existing) — marketing + transactional email | free tier |
 | Errors | Sentry (apps + services) | free tier |
+| Secrets | Infisical (dev/preview/prod, synced to Railway + Vercel) | free tier |
 | Analytics | PostHog (after cookie consent) | free tier |
 | Backups | Neon PITR + nightly `pg_dump` → R2 (GitHub Action, 30 days) | $0 |
 | Previews | Vercel preview + Railway PR env + Neon branch per PR | $0–low |

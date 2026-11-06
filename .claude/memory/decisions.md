@@ -2,6 +2,15 @@
 
 One line per decision. Newest first. The loop reads this before asking a question; if it's answered here, don't ask.
 
+## 2026-11-06 — secrets & config
+
+| # | Topic | Decision | Why |
+|---|---|---|---|
+| D40 | Secret store | **Infisical** (cloud free tier; self-host possible later). Envs `dev` / `preview` / `prod`, synced to Railway + Vercel. Locally and in the loop: `infisical run --env=dev -- <cmd>`. Supersedes D4's "secrets in `.env.local`". **Human to verify** current free-tier limits. | One source of truth, no hand-copying, open-source. |
+| D41 | Config map | `packages/config`: typed, committed, validated at boot (zod); one object per service; env vars override defaults; missing/invalid → exit at boot. Public-by-design keys (Stripe publishable, Sentry DSN, OneSignal app ID, OAuth client IDs) are config. | Typos caught at boot, change history in git. |
+| D42 | Prod access | Prod secrets readable only by owner + Railway/Vercel integrations. Loop machine identity = `dev` read-only. Staff never get Infisical. `.env.local` holds only the loop's Infisical machine-identity credentials. | Small blast radius. |
+| D43 | Rotation | `docs/SECRETS.md` is the inventory + runbook. 90-day calendar reminder for high-value keys; immediate on leak / staff departure; JWT keys auto-rotate via Better Auth JWKS. Order: create → update Infisical → redeploy → verify → revoke old. | |
+
 ## 2026-11-05 — grill round 4
 
 | # | Topic | Decision | Why |
@@ -48,7 +57,7 @@ One line per decision. Newest first. The loop reads this before asking a questio
 | D1 | Landing move | Loop moves `index.html`/`privacy.html` → `apps/landing/` on a branch, then **stops**. Human flips Vercel Root Directory, then merges. | Live site; Vercel config is outside the repo. |
 | D2 | Auth tokens | Better Auth JWT plugin. Gateway verifies via JWKS fetched from auth (cached). Same short-lived JWT for `/social/ws` query param. | No shared secret, stateless gateway. |
 | D3 | First slice | auth + gateway + free chapters from R2. No money until this works end to end. | Proves the full path with zero payment risk. |
-| D4 | Done gate | `bun test` + `bun run typecheck` green. Loop uses Stripe **test** keys + Neon **dev branch** via `.env.local` (gitignored). Live keys are human-only. | |
+| D4 | Done gate | `bun test` + `bun run typecheck` green. Loop uses Stripe **test** keys + Neon **dev branch** only (now via Infisical `dev`, see D40). Live keys are human-only. | |
 | D5 | Subscription payment | Cards = recurring Stripe subscription. PromptPay = one-off fixed pass (e.g. 30 days, no auto-renew). Loop must verify PromptPay limits in current Stripe docs before building. | PromptPay is believed to be one-off only. |
 | D6 | Plan scope | Active plan unlocks **all digital chapters** until `current_period_end`. Cancel = keep access to period end. | One entitlement row, `scope_type=plan`. |
 | D7 | Physical → digital | Buying a physical book **also grants** digital entitlement for its chapters. Needs `product_bundles(product_id, grants_scope_type, grants_scope_id)`. | Owner choice. |
