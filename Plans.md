@@ -10,7 +10,7 @@ Rules: `CLAUDE.md`. Decisions referenced as D1…D15 in `.claude/memory/decision
 
 | Task | 内容 | DoD | Depends | Status |
 |------|------|-----|---------|--------|
-| 0.1 | Bun workspaces root: `package.json`, `tsconfig.base.json`, scripts `test`/`typecheck`/`dev`/`db:migrate`, `.gitignore` incl. `.env.local` | `bun install && bun test && bun run typecheck` exit 0 | - | cc:TODO |
+| 0.1 | Bun workspaces root: `package.json`, `tsconfig.base.json`, scripts `test`/`typecheck`/`dev`/`db:migrate`, `.gitignore` incl. `.env.local` | `bun install && bun test && bun run typecheck` exit 0 | - | cc:完了 |
 | 0.2 | Move `index.html`, `privacy.html` → `apps/landing/` (D1) [tdd:skip:static-move] **gate** | files moved, PR labelled `needs-human`, notified | 0.1 | cc:TODO |
 | 0.3 | `packages/db`: Drizzle setup, `auth` + `reading` schemas, first migration on Neon dev branch | `bun run db:migrate` succeeds on dev branch; schema test passes | 0.1 | cc:TODO |
 
