@@ -18,7 +18,7 @@ Rules: `CLAUDE.md`. Decisions referenced as D1…D15 in `.claude/memory/decision
 
 | Task | 内容 | DoD | Depends | Status |
 |------|------|-----|---------|--------|
-| 1.1 | `services/auth`: Better Auth email sign-up/in + JWT plugin + JWKS endpoint (D2) [tdd:required] **gate** | test: sign up → get JWT → verify against JWKS | 0.3 | cc:TODO |
+| 1.1 | `services/auth`: Better Auth email sign-up/in + JWT plugin + JWKS endpoint (D2) [tdd:required] **gate** | test: sign up → get JWT → verify against JWKS; confirm Better Auth Drizzle adapter works with `pgSchema("auth")` tables | 0.3 | cc:TODO |
 | 1.2 | `services/gateway`: JWKS verify, forward `x-user-id`/`x-user-role`, CORS, in-memory rate limits per ARCHITECTURE routes [tdd:required] **gate** | tests: bad token 401, good token forwards headers, rate limit returns 429 | 1.1 | cc:TODO |
 | 1.3 | `services/reading`: catalog (series, chapters) public endpoints [tdd:required] | tests for list series / list chapters | 0.3 | cc:TODO |
 | 1.4 | `services/reading`: `GET /chapters/:id/pages` → signed R2 URLs (≈5 min) for `is_free` chapters; 403 otherwise (D10) [tdd:required] | tests: free → URLs, paid without entitlement → 403 | 1.3 | cc:TODO |
