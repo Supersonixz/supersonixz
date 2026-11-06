@@ -9,7 +9,7 @@
   },
   "scripts": {
     "generate": "drizzle-kit generate",
-    "migrate": "bun --env-file=../../.env.local x drizzle-kit migrate",
+    "migrate": "drizzle-kit migrate",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
