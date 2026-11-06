@@ -61,7 +61,7 @@ The gateway verifies the JWT once and forwards `x-user-id`, `x-user-role` and `x
 
 ## DB schema outline (Postgres, one schema per service)
 
-**auth**: `staff_permissions(user_id, permission)`, `users(id, email nullable, name, role[reader|staff|admin], birth_date, dob_confirmed_at, created_at)`, 2FA tables, `sessions`, `accounts` (Better Auth tables)
+**auth**: `staff_permissions(user_id, permission)`, `users(id, email (not null until 1b.3 makes it nullable for email-less X users), name, role[reader|staff|admin], birth_date, dob_confirmed_at, created_at)`, 2FA tables, `sessions`, `accounts` (Better Auth tables)
 
 **reading**
 - `series(id, slug, title_th, title_ja, title_en, author, cover_url, status, rating[all|13+|18+], license_until, on_license_expiry[keep_access|revoke])` — trigram indexes on titles
