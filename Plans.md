@@ -13,7 +13,7 @@ Rules: `CLAUDE.md`. Decisions referenced as D1…D15 in `.claude/memory/decision
 | 0.1 | Bun workspaces root: `package.json`, `tsconfig.base.json`, scripts `test`/`typecheck`/`dev`/`db:migrate`, `.gitignore` incl. `.env.local` | `bun install && bun test && bun run typecheck` exit 0 | - | cc:完了 |
 | 0.2 | Move `index.html`, `privacy.html` → `apps/landing/` (D1) [tdd:skip:static-move] **gate** | files moved, PR labelled `needs-human`, notified | 0.1 | cc:完了 |
 | 0.4 | Infisical: project, envs dev/preview/prod, Railway + Vercel sync, loop machine identity (dev read-only) (D40, D42) **gate — human** | `infisical run --env=dev -- printenv DATABASE_URL` works from the loop; prod not readable by loop identity | 0.1 | cc:TODO |
-| 0.5 | `packages/config`: zod-validated config per service, env overrides, exit at boot on missing/invalid (D41) [tdd:required] | tests: valid env parses; missing required var throws naming it | 0.1 | cc:TODO |
+| 0.5 | `packages/config`: zod-validated config per service, env overrides, exit at boot on missing/invalid (D41) [tdd:required] | tests: valid env parses; missing required var throws naming it | 0.1 | cc:完了 |
 | 0.3 | `packages/db`: Drizzle setup, `auth` + `reading` schemas, first migration on Neon dev branch | `bun run db:migrate` succeeds on dev branch; schema test passes; root `typecheck` widened to cover workspaces (`bun run --filter '*' typecheck` + per-package tsconfig) | 0.1 | blocked: needs `DATABASE_URL` (Neon dev branch) in Infisical `dev` (task 0.4) to run `infisical run --env=dev -- bun run db:migrate` |
 
 ## Phase 1: First slice — sign up, read a free chapter (D3)
