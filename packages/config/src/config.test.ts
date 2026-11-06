@@ -36,3 +36,9 @@ test("error message never echoes the secret value", () => {
     expect(String(e)).not.toContain(secret);
   }
 });
+
+test("enum failures don't echo the received value either", () => {
+  const secret = "prod_secret_value";
+  expect(() => loadConfig(baseSchema, { NODE_ENV: secret })).toThrow(/NODE_ENV/);
+  expect(() => loadConfig(baseSchema, { NODE_ENV: secret })).not.toThrow(new RegExp(secret));
+});
