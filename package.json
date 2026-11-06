@@ -1,10 +1,14 @@
 {
   "name": "supersonixz",
   "private": true,
-  "workspaces": ["apps/*", "services/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
   "scripts": {
     "test": "bun test",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json && bun run --filter '*' typecheck",
     "dev": "bun run --filter '*' dev",
     "db:migrate": "bun run --filter @supersonixz/db migrate"
   },
